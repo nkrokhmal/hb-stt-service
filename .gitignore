@@ -1,1 +1,6 @@
 .env
+.idea/
+__pycache__/
+test.wav
+app/test.wav
+app/model
