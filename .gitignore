@@ -3,4 +3,4 @@
 __pycache__/
 test.wav
 app/test.wav
-app/model
+app/model/
