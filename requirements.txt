@@ -1,0 +1,4 @@
+psycopg2-binary==2.8.5
+pysftp==0.2.9
+pika==1.1.0
+vosk==0.3.10
