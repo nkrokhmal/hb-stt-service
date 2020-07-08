@@ -7,12 +7,12 @@ WORKDIR /app
 #    && pip install -r requirements.txt
 RUN wget https://alphacephei.com/kaldi/models/vosk-model-ru-0.10.zip \
     && unzip vosk-model-ru-0.10.zip \
-    && mv vosk-model-ru-0.10 model
+    && mv vosk-model-ru-0.10 model \
+    && rm vosk-model-ru-0.10.zip
 RUN mkdir -p /opt \
     && chmod -R 777 /opt/ \
     && mkdir -p /opt/download \
     && chmod -R 777 /opt/download
-
 RUN ls
 COPY . .
 EXPOSE 53456

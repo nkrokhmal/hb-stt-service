@@ -38,7 +38,7 @@ class SpeechToTextClient:
                     exit(1)
 
                 while True:
-                    data = wf.readframes(4000)
+                    data = wf.readframes(8000)
                     if len(data) == 0:
                         break
                     if self.stt_recognizer.AcceptWaveform(data):
@@ -53,6 +53,8 @@ class SpeechToTextClient:
                     for word in phrase:
                         word['word'] = word['word'].replace("'", ' ')
                 self.psql_client.update_stt_result(result=json.dumps(recognition_result), dialogue_id=dialogue_id)
+                print('Deleting local path {}'.format(local_file_path))
+                os.remove(local_file_path)
                 print('Function finished, result of recognition {}'.format(recognition_result))
             except Exception as e:
                 self.psql_client.update_error_status(dialogue_id)
