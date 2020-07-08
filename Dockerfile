@@ -20,4 +20,4 @@ RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
 RUN ls
-CMD ["python", "run.py"]
+CMD ["python", "-u", "run.py"]
