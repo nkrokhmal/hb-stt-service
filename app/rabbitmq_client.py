@@ -16,9 +16,9 @@ class RabbitMQClient:
         port = config.RABBITMQ_PORT
         self.channel_name = config.RABBITMQ_QUEUE_NAME
 
-        # credentials = pika.PlainCredentials(username=username, password=password)
+        credentials = pika.PlainCredentials(username=username, password=password)
         rabbitmq_params = pika.ConnectionParameters(host=host, virtual_host=vhost, port=port,
-                                                    # credentials=credentials
+                                                    credentials=credentials
                                                     )
         connection = pika.BlockingConnection(parameters=rabbitmq_params)
         self.channel = connection.channel()
