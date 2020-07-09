@@ -13,4 +13,7 @@ client = create_app(os.getenv('CONFIG_TYPE') or 'debug')
 
 
 if __name__ == '__main__':
-    client.start_consuming()
+    try:
+        client.start_consuming()
+    except Exception as e:
+        raise Exception(e)
