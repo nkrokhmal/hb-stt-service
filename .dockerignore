@@ -1,0 +1,8 @@
+.env
+.idea/
+__pycache__/
+Dockerfile
+*.md
+test.wav
+app/test.wav
+app/model/

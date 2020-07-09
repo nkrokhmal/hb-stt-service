@@ -18,7 +18,7 @@ class SpeechToTextClient:
             self.stt_recognizer = None
 
     def recognize(self, ch, method, properties, body):
-        remote_file_path = body.decode("utf-8")
+        remote_file_path = json.loads(body.decode("utf-8"))['Path']
         try:
 
             dialogue_id = (remote_file_path.split('/')[1]).split('.')[0]
