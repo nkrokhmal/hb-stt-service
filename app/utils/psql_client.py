@@ -5,8 +5,6 @@ from typing import Callable
 
 def reconnect(f: Callable):
     def wrapper(client, *args, **kwargs):
-        print(type(client))
-        print(client is None)
         if not client.connected():
             client.connect()
         try:
@@ -81,8 +79,10 @@ class PostgresClient:
             cur = self.client.cursor()
             req = 'UPDATE "{}" SET  "StatusId" = 7, "STTResult" = \'{}\' WHERE "DialogueId" = \'{}\' and "StatusId" = 6'\
                 .format('FileAudioDialogues', result, dialogue_id)
-            print(req)
+            print('Executing')
             cur.execute(req)
-            зкште
+            print('Committing')
             self.client.commit()
+            print('Closing')
             cur.close()
+            print('Finished')
