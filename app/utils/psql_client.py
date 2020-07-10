@@ -4,7 +4,7 @@ from typing import Callable
 
 
 def reconnect(f: Callable):
-    def wrapper(client: PostgresClient, *args, **kwargs):
+    def wrapper(client, *args, **kwargs):
         if not client.connected():
             client.connect()
 
@@ -17,6 +17,7 @@ def reconnect(f: Callable):
 
 
 class PostgresClient:
+
     def __init__(self, config=None):
         if config is not None:
             self.init_app(config)
