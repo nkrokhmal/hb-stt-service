@@ -40,6 +40,8 @@ class PostgresClient:
                                        password=self._password,
                                        host=self._host)
 
+        print('Connection established {}'.format(self.connected()))
+
     def connected(self) -> bool:
         return self.client and self.client.closed == 0
 
@@ -47,7 +49,7 @@ class PostgresClient:
         if self.conneced():
             try:
                 self.client.close()
-            except Exception:
+            except Exception as e:
                 print('Exception occured while closing connection {}'.format(e))
                 pass
         self.client = None
