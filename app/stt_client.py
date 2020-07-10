@@ -17,10 +17,10 @@ class SpeechToTextClient:
         else:
             self.stt_recognizer = None
 
-    def recognize(self, ch, method, properties, body):
-        remote_file_path = json.loads(body.decode("utf-8"))['Path']
+    def recognize(self, body):
+        remote_file_path = body
+        # remote_file_path = json.loads(body.decode("utf-8"))['Path']
         try:
-
             dialogue_id = (remote_file_path.split('/')[1]).split('.')[0]
             print('Dialogue id is {}'.format(dialogue_id))
             local_file_path = os.path.join(self.sftp_client.download_path, remote_file_path.split('/')[1])
@@ -62,6 +62,8 @@ class SpeechToTextClient:
                 # return recognition_result
         else:
             print('Please, init stt recognizer')
+
+
 
     def init_app(self, config):
         SetLogLevel(0)
