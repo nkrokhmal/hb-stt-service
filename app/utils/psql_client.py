@@ -66,23 +66,17 @@ class PostgresClient:
             cur = self.client.cursor()
             req = 'UPDATE "{}" SET  "StatusId" = 8 WHERE "DialogueId" = \'{}\'' \
                 .format('FileAudioDialogues', dialogue_id)
-            print(req)
             cur.execute(req)
             self.client.commit()
             cur.close()
 
-    @retry(stop=stop_after_attempt(3), wait=wait_exponential())
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(max=2))
     @reconnect
     def update_stt_result(self, result, dialogue_id):
         if self.client is not None:
-            print(type(result))
             cur = self.client.cursor()
             req = 'UPDATE "{}" SET  "StatusId" = 7, "STTResult" = \'{}\' WHERE "DialogueId" = \'{}\' and "StatusId" = 6'\
                 .format('FileAudioDialogues', result, dialogue_id)
-            print('Executing')
             cur.execute(req)
-            print('Committing')
             self.client.commit()
-            print('Closing')
             cur.close()
-            print('Finished')

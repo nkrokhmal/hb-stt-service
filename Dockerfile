@@ -13,11 +13,8 @@ RUN mkdir -p /opt \
     && chmod -R 777 /opt/ \
     && mkdir -p /opt/download \
     && chmod -R 777 /opt/download
-RUN ls
 COPY . .
 EXPOSE 53456
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
-
-RUN ls
 CMD ["python", "-u", "run.py"]
