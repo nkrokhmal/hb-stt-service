@@ -44,7 +44,7 @@ class PostgresClient:
         return self.client and self.client.closed == 0
 
     def close(self):
-        if self.conneced():
+        if self.connected():
             try:
                 self.client.close()
             except Exception as e:
