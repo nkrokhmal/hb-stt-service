@@ -2,6 +2,7 @@
 .idea/
 __pycache__/
 test.wav
+model/
 app/test.wav
 app/model/
 app/__pycache__/
