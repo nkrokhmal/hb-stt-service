@@ -5,6 +5,8 @@ from typing import Callable
 
 def reconnect(f: Callable):
     def wrapper(client, *args, **kwargs):
+        print(type(client))
+        print(client is None)
         if not client.connected():
             client.connect()
         try:
