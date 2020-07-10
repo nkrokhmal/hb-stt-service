@@ -70,7 +70,7 @@ class PostgresClient:
             self.client.commit()
             cur.close()
 
-    @retry(stop=stop_after_attempt(3), wait=wait_exponential(max=2))
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(max=10))
     @reconnect
     def update_stt_result(self, result, dialogue_id):
         if self.client is not None:
