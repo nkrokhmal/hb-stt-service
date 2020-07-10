@@ -7,10 +7,10 @@ def reconnect(f: Callable):
     def wrapper(client, *args, **kwargs):
         if not client.connected():
             client.connect()
-
         try:
             return f(client, *args, **kwargs)
-        except psycopg2.Error:
+        except psycopg2.Error as e:
+            print('Reconnect exception occured {}'.format(e))
             client.close()
             raise
     return wrapper
@@ -46,7 +46,9 @@ class PostgresClient:
             try:
                 self.client.close()
             except Exception:
+                print('Exception occured while closing connection {}'.format(e))
                 pass
+        self.client = None
 
     def connect(self):
         self.close()
