@@ -1,5 +1,5 @@
 import psycopg2
-from tenacity import retry, wait_exponential, stop_after_attempt
+from tenacity import retry, wait_exponential, stop_after_attempt, wait_fixed
 from typing import Callable
 import json
 
@@ -62,7 +62,7 @@ class PostgresClient:
                                        password=self._password,
                                        host=self._host)
 
-    @retry(stop=stop_after_attempt(3), wait_fixed=200)
+    @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))
     @reconnect
     def get_creation_time(self, dialogue_id):
         if self.client is not None:
@@ -79,7 +79,7 @@ class PostgresClient:
             except Exception as e:
                 print(e)
 
-    @retry(stop=stop_after_attempt(3), wait_fixed=200)
+    @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))
     @reconnect
     def update_error_status(self, dialogue_id):
         if self.client is not None:
@@ -90,7 +90,7 @@ class PostgresClient:
             self.client.commit()
             cur.close()
 
-    @retry(stop=stop_after_attempt(3), wait_fixed=200)
+    @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))
     @reconnect
     def update_stt_result(self, result, dialogue_id):
         if self.client is not None:
