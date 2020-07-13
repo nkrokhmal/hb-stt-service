@@ -1,6 +1,7 @@
 import psycopg2
 from tenacity import retry, wait_exponential, stop_after_attempt
 from typing import Callable
+import json
 
 
 def reconnect(f: Callable):
@@ -58,6 +59,24 @@ class PostgresClient:
                                        user=self._username,
                                        password=self._password,
                                        host=self._host)
+
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential())
+    @reconnect
+    def get_creation_time(self, dialogue_id):
+        if self.client is not None:
+            try:
+                cur = self.client.cursor()
+                req = 'SELECT "CreationTime" FROM "{}" where "DialogueId" = \'{}\' ORDER BY "CreationTime" DESC'\
+                    .format('FileAudioDialogues', dialogue_id)
+                cur.execute(req)
+                records = [x[0] for x in cur.fetchall()]
+                cur.close()
+                if len(records) > 0:
+                    return sorted(records)[-1]
+                return None
+            except Exception as e:
+                print(e)
+
 
     @retry(stop=stop_after_attempt(3), wait=wait_exponential())
     @reconnect

@@ -5,6 +5,7 @@ import wave
 import json
 from .utils.psql_client import PostgresClient
 from .utils.sftp_client import SftpClient
+from datetime import datetime
 
 
 class SpeechToTextClient:
@@ -57,12 +58,16 @@ class SpeechToTextClient:
                 os.remove(local_file_path)
                 print('Function finished, result of recognition {}'.format(recognition_result))
             except Exception as e:
-                self.psql_client.update_error_status(dialogue_id)
-                print('Exception occured {}'.format(e))
-                # return recognition_result
+                try:
+                    cur_time = datetime.utcnow()
+                    creation_time = self.psql_client.get_creation_time(dialogue_id=dialogue_id)
+                    if (cur_time - creation_time).total_seconds() / 3600 > 3.:
+                        self.psql_client.update_error_status(dialogue_id)
+                    print('Exception occured {}, recognition longs to musch period of time'.format(e))
+                except:
+                    exit(1)
         else:
             print('Please, init stt recognizer')
-
 
 
     def init_app(self, config):
