@@ -99,5 +99,8 @@ class PostgresClient:
                 .format('FileAudioDialogues', result, dialogue_id)
             print(req)
             cur.execute(req)
+            print('Executing')
             self.client.commit()
+            print('Commiting')
             cur.close()
+            print('Closing')
