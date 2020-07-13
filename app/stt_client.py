@@ -17,6 +17,9 @@ class SpeechToTextClient:
             self.init_app(config)
         else:
             self.stt_recognizer = None
+            self.config = None
+            self.sftp_client = None
+            self.psql_client = None
 
     def recognize(self, body):
         remote_file_path = body
@@ -55,16 +58,22 @@ class SpeechToTextClient:
                         word['word'] = word['word'].replace("'", ' ')
                 recognition_result = self.process_sttresult(recognition_result)
                 print('Result is {}'.format(json.dumps(recognition_result)))
-                self.psql_client.update_stt_result(result=json.dumps(recognition_result, ensure_ascii=False), dialogue_id=dialogue_id)
+
+                psql_client = PostgresClient()
+                psql_client.init_app(config=self.config)
+                psql_client.update_stt_result(result=json.dumps(recognition_result, ensure_ascii=False), dialogue_id=dialogue_id)
+
                 print('Deleting local path {}'.format(local_file_path))
                 os.remove(local_file_path)
                 print('Function finished, result of recognition {}'.format(recognition_result))
             except Exception as e:
                 try:
+                    psql_client = PostgresClient()
+                    psql_client.init_app(config=self.config)
                     cur_time = datetime.utcnow()
-                    creation_time = self.psql_client.get_creation_time(dialogue_id=dialogue_id)
+                    creation_time = psql_client.get_creation_time(dialogue_id=dialogue_id)
                     if (cur_time - creation_time).total_seconds() / 3600 > 3.:
-                        self.psql_client.update_error_status(dialogue_id)
+                        psql_client.update_error_status(dialogue_id)
                     print('Exception occured {}, recognition longs to musch period of time'.format(e))
                 except:
                     exit(1)
@@ -92,9 +101,12 @@ class SpeechToTextClient:
         model = Model(model_path)
         self.stt_recognizer = KaldiRecognizer(model, rate)
 
-        self.psql_client = PostgresClient()
-        self.psql_client.init_app(config=config)
+        # self.psql_client = PostgresClient()
+        # self.psql_client.init_app(config=config)
+        self.psql_client = None
 
         self.sftp_client = SftpClient()
         self.sftp_client.init_app(config=config)
+
+        self.config = config
 
