@@ -55,7 +55,7 @@ class SpeechToTextClient:
                         word['word'] = word['word'].replace("'", ' ')
                 recognition_result = self.process_sttresult(recognition_result)
                 print('Result is {}'.format(json.dumps(recognition_result)))
-                self.psql_client.update_stt_result(result=json.dumps(recognition_result), dialogue_id=dialogue_id)
+                self.psql_client.update_stt_result(result=json.dumps(recognition_result, ensure_ascii=False), dialogue_id=dialogue_id)
                 print('Deleting local path {}'.format(local_file_path))
                 os.remove(local_file_path)
                 print('Function finished, result of recognition {}'.format(recognition_result))
