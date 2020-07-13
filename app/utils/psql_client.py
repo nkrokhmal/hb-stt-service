@@ -7,7 +7,9 @@ import json
 def reconnect(f: Callable):
     def wrapper(client, *args, **kwargs):
         if not client.connected():
+            print('Connecting')
             client.connect()
+            print('Connected')
         try:
             return f(client, *args, **kwargs)
         except psycopg2.Error as e:
@@ -60,7 +62,7 @@ class PostgresClient:
                                        password=self._password,
                                        host=self._host)
 
-    @retry(stop=stop_after_attempt(3), wait=wait_exponential())
+    @retry(stop=stop_after_attempt(3), wait_fixed=200)
     @reconnect
     def get_creation_time(self, dialogue_id):
         if self.client is not None:
@@ -77,8 +79,7 @@ class PostgresClient:
             except Exception as e:
                 print(e)
 
-
-    @retry(stop=stop_after_attempt(3), wait=wait_exponential())
+    @retry(stop=stop_after_attempt(3), wait_fixed=200)
     @reconnect
     def update_error_status(self, dialogue_id):
         if self.client is not None:
@@ -89,15 +90,14 @@ class PostgresClient:
             self.client.commit()
             cur.close()
 
-    @retry(stop=stop_after_attempt(3), wait=wait_exponential(max=10))
+    @retry(stop=stop_after_attempt(3), wait_fixed=200)
     @reconnect
     def update_stt_result(self, result, dialogue_id):
         if self.client is not None:
             cur = self.client.cursor()
-            print(type(result))
             req = 'UPDATE "{}" SET  "StatusId" = 7, "STTResult" = \'{}\' WHERE "DialogueId" = \'{}\' and "StatusId" = 6'\
                 .format('FileAudioDialogues', result, dialogue_id)
-            print(req)
+            print('Creating request')
             cur.execute(req)
             print('Executing')
             self.client.commit()
