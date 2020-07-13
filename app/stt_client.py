@@ -53,8 +53,8 @@ class SpeechToTextClient:
                 for phrase in recognition_result:
                     for word in phrase:
                         word['word'] = word['word'].replace("'", ' ')
-                print(recognition_result)
                 recognition_result = self.process_sttresult(recognition_result)
+                print('Result is {}'.format(json.dumps(recognition_result)))
                 self.psql_client.update_stt_result(result=json.dumps(recognition_result), dialogue_id=dialogue_id)
                 print('Deleting local path {}'.format(local_file_path))
                 os.remove(local_file_path)
