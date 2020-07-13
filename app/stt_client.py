@@ -53,6 +53,7 @@ class SpeechToTextClient:
                 for phrase in recognition_result:
                     for word in phrase:
                         word['word'] = word['word'].replace("'", ' ')
+                recognition_result = self.process_sttresult(recognition_result)
                 self.psql_client.update_stt_result(result=json.dumps(recognition_result), dialogue_id=dialogue_id)
                 print('Deleting local path {}'.format(local_file_path))
                 os.remove(local_file_path)
@@ -69,6 +70,15 @@ class SpeechToTextClient:
         else:
             print('Please, init stt recognizer')
 
+    def process_sttresult(self, stt_result):
+        result = []
+        for word in stt_result:
+            word_format = {}
+            word_format['Word'] = word['word']
+            word_format['Time'] = word['start']
+            word_format['Duration'] = word['end'] - word['start']
+            result.append(word)
+        return result
 
     def init_app(self, config):
         SetLogLevel(0)
