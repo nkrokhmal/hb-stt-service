@@ -17,3 +17,4 @@ if __name__ == '__main__':
         client.start_consuming()
     except Exception as e:
         raise Exception(e)
+        exit(1)
