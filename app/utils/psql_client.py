@@ -95,12 +95,8 @@ class PostgresClient:
     def update_stt_result(self, result, dialogue_id):
         if self.client is not None:
             cur = self.client.cursor()
-            req = 'UPDATE "{}" SET  "StatusId" = 7, "STTResult" = \'{}\' WHERE "DialogueId" = \'{}\' and "StatusId" = 6'\
+            req = 'UPDATE "{}" SET  "StatusId" = 6, "STTResult" = \'{}\' WHERE "DialogueId" = \'{}\' and "StatusId" = 3'\
                 .format('FileAudioDialogues', result, dialogue_id)
-            print('Creating request')
             cur.execute(req)
-            print('Executing')
             self.client.commit()
-            print('Commiting')
             cur.close()
-            print('Closing')

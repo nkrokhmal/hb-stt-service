@@ -19,11 +19,9 @@ class SpeechToTextClient:
             self.stt_recognizer = None
             self.config = None
             self.sftp_client = None
-            self.psql_client = None
 
     def recognize(self, body):
         remote_file_path = body
-        # remote_file_path = json.loads(body.decode("utf-8"))['Path']
         try:
             dialogue_id = (remote_file_path.split('/')[1]).split('.')[0]
             print('Dialogue id is {}'.format(dialogue_id))
@@ -103,7 +101,6 @@ class SpeechToTextClient:
 
         # self.psql_client = PostgresClient()
         # self.psql_client.init_app(config=config)
-        self.psql_client = None
 
         self.sftp_client = SftpClient()
         self.sftp_client.init_app(config=config)
