@@ -18,7 +18,9 @@ class SpeechToTextClient:
         else:
             self.stt_recognizer = None
             self.config = None
+            self.model = None
             self.sftp_client = None
+            self.rate = None
 
     def recognize(self, body):
         remote_file_path = body
@@ -32,7 +34,8 @@ class SpeechToTextClient:
             exit(1)
 
         recognition_result = []
-        if self.stt_recognizer is not None:
+        stt_recognizer = KaldiRecognizer(self.model, self.rate)
+        if stt_recognizer is not None:
             try:
                 wf = wave.open(local_file_path, "rb")
                 if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getcomptype() != "NONE":
@@ -43,12 +46,12 @@ class SpeechToTextClient:
                     data = wf.readframes(8000)
                     if len(data) == 0:
                         break
-                    if self.stt_recognizer.AcceptWaveform(data):
-                        recognition_chunk = json.loads(self.stt_recognizer.Result())
+                    if stt_recognizer.AcceptWaveform(data):
+                        recognition_chunk = json.loads(stt_recognizer.Result())
                         if 'result' in recognition_chunk.keys():
                             recognition_result.append(recognition_chunk['result'])
                     else:
-                        recognition_chunk = json.loads(self.stt_recognizer.PartialResult())
+                        recognition_chunk = json.loads(stt_recognizer.PartialResult())
                         if 'result' in recognition_chunk.keys():
                             recognition_result.append(recognition_chunk['result'])
                 print("Recognition result {}".format(json.dumps(recognition_result)))
@@ -94,12 +97,12 @@ class SpeechToTextClient:
     def init_app(self, config):
         SetLogLevel(0)
         model_path = config.MODEL_PATH
-        rate = int(config.RATE)
+        self.rate = int(config.RATE)
         if not os.path.exists(model_path):
             print("Error in model path. Such directory does not exist!")
             exit(1)
-        model = Model(model_path)
-        self.stt_recognizer = KaldiRecognizer(model, rate)
+        self.model = Model(model_path)
+        # self.stt_recognizer = KaldiRecognizer(self.model, rate)
 
         # self.psql_client = PostgresClient()
         # self.psql_client.init_app(config=config)
