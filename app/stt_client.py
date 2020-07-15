@@ -51,11 +51,13 @@ class SpeechToTextClient:
                         recognition_chunk = json.loads(self.stt_recognizer.PartialResult())
                         if 'result' in recognition_chunk.keys():
                             recognition_result.append(recognition_chunk['result'])
+                print("Recognition result {}".format(json.dumps(recognition_result)))
                 for phrase in recognition_result:
                     for word in phrase:
                         word['word'] = word['word'].replace("'", ' ')
+
                 recognition_result = self.process_sttresult(recognition_result)
-                print('Result is {}'.format(json.dumps(recognition_result)))
+                # print('Result is {}'.format(json.dumps(recognition_result)))
 
                 psql_client = PostgresClient()
                 psql_client.init_app(config=self.config)
