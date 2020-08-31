@@ -31,4 +31,5 @@ class SftpClient(object):
         return file
 
     def download_file_local(self, local_path, remote_path):
+        print('Downloading from {}'.format(self.upload_path + remote_path))
         self.sftp_client.get(self.upload_path + remote_path, localpath=local_path)

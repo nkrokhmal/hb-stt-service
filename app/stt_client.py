@@ -28,9 +28,11 @@ class SpeechToTextClient:
             dialogue_id = (remote_file_path.split('/')[1]).split('.')[0]
             print('Dialogue id is {}'.format(dialogue_id))
             local_file_path = os.path.join(self.sftp_client.download_path, remote_file_path.split('/')[1])
+            print(local_file_path, remote_file_path)
             self.sftp_client.download_file_local(local_file_path, remote_file_path)
         except Exception as e:
             print('Exception occured, wrong filename format {}'.format(remote_file_path))
+            print('Exception occured {}'.format(e))
             exit(1)
 
         recognition_result = []
